@@ -260,6 +260,7 @@ class TermDict(MutableMapping):
             lines.append(' '.join([variables.to_coef_line, self[variables]]))
         return '\n'.join(lines)
 
+    @property
     def variables(self):
         ''' Return a set of all of the variables this term dict contains
 
