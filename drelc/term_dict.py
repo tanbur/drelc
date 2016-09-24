@@ -84,7 +84,7 @@ class SympyVariables(MonomialVariables):
 
     def __init__(self, sympy_expr):
         assert is_monic(sympy_expr)
-        assert all([isinstance(atom, sympy.symbol.Symbol) for atom in sympy_expr.atoms()])
+        assert all([isinstance(atom, sympy.symbol.Symbol) for atom in sympy_expr.atoms()]) or (sympy_expr is sympy.S.One)
         assert '+' not in str(sympy_expr)
         self._sympy_expr = sympy_expr
         self._variables = tuple(sorted(sympy_expr.atoms(), key=str))
@@ -291,6 +291,13 @@ class TermDict(MutableMapping):
                 term_dict[_var] = _coef
         return term_dict
 
+
+    def as_sympy_expr(self):
+        ''' Return a sympy expression of the TermDict '''
+        if len(self) > 40:
+            raise ValueError('TermDict too long to convert into sympy!')
+        terms = [_var.as_sympy_expr() * _coef for _var, _coef in self.iteritems()]
+        return sum(terms)
 
 if __name__ == '__main__':
     import doctest
